@@ -1,17 +1,39 @@
 # Password Generator
 
-A Python-based password generator that creates strong and random passwords.
+## Project Overview
+
+This project is a Password Generator developed using Python and Tkinter.
+
+The application allows users to generate secure passwords based on selected criteria such as letters, numbers, and symbols.
 
 ## Features
-- User chooses password length
-- Includes letters, numbers, and symbols
-- Ensures stronger password generation
-- Generates a different password every time
+
+* Graphical User Interface (GUI)
+* Password length selection
+* Character type customization
+* Random password generation
+* Password strength indicator
+* Clipboard copy functionality
+* Input validation
+* Error handling
 
 ## Technologies Used
-- Python
-- Random Module
-- String Module
+
+* Python
+* Tkinter
+
+## Learning Outcomes
+
+Through this project, I learned:
+
+* Random password generation
+* GUI development using Tkinter
+* Event-driven programming
+* Input validation
+* Error handling
+* Character set handling
+* Clipboard integration
 
 ## Author
+
 Sanskruti Santosh Kute
