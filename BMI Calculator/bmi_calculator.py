@@ -1,9 +1,13 @@
 print("===== BMI CALCULATOR =====")
 
 weight = float(input("Enter your weight in kg: "))
-height = float(input("Enter your height in meters: "))
+height_m = float(input("Enter your height in meters: "))
 
-bmi = weight / (height * height)
+if height_m <= 0:
+    print("Height must be a positive number.")
+    raise SystemExit(1)
+
+bmi = weight / (height_m * height_m)
 
 print("\n===== RESULT =====")
 print("Your BMI is:", round(bmi, 2))
