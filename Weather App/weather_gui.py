@@ -2,89 +2,83 @@ import tkinter as tk
 from tkinter import messagebox
 import requests
 
+
 def get_weather():
 
     city = city_entry.get().strip()
 
+    # Step 1: Check empty input
     if city == "":
-        messagebox.showerror(
-            "Error",
-            "Please enter a city name"
-        )
+        messagebox.showerror("Error", "Please enter a city name")
         return
 
     try:
+        # Step 2: API call
         url = f"https://wttr.in/{city}?format=j1"
-
         response = requests.get(url)
 
         data = response.json()
 
+        # Step 3: Get weather data
         current = data["current_condition"][0]
 
         temperature = current["temp_C"]
+        feels_like = current["FeelsLikeC"]
         humidity = current["humidity"]
         condition = current["weatherDesc"][0]["value"]
         wind_speed = current["windspeedKmph"]
-        feels_like = current["FeelsLikeC"]
 
+        # Step 4: Show result
         result_label.config(
             text=
-            f"City: {city}\n\n"
-            f"Temperature: {temperature} °C\n"
-            f"Feels Like: {feels_like} °C\n"
-            f"Humidity: {humidity}%\n"
-            f"Condition: {condition}\n"
-            f"Wind Speed: {wind_speed} km/h"
+            "City: " + city + "\n\n" +
+            "Temperature: " + temperature + " °C\n" +
+            "Feels Like: " + feels_like + " °C\n" +
+            "Humidity: " + humidity + "%\n" +
+            "Condition: " + condition + "\n" +
+            "Wind Speed: " + wind_speed + " km/h"
         )
 
     except:
-        messagebox.showerror(
-            "Error",
-            "Unable to retrieve weather information"
-        )
+        messagebox.showerror("Error", "Unable to fetch weather data")
 
+
+# UI WINDOW
 window = tk.Tk()
-
 window.title("Weather App")
-window.geometry("550x500")
+window.geometry("500x450")
 
-title_label = tk.Label(
+
+# Title
+tk.Label(
     window,
     text="Weather App",
-    font=("Arial", 20, "bold")
-)
-title_label.pack(pady=15)
+    font=("Arial", 18, "bold")
+).pack(pady=10)
 
-city_label = tk.Label(
-    window,
-    text="Enter City Name",
-    font=("Arial", 11)
-)
-city_label.pack()
 
-city_entry = tk.Entry(
-    window,
-    width=30,
-    font=("Arial", 11)
-)
+# City input
+city_entry = tk.Entry(window, font=("Arial", 12))
 city_entry.pack(pady=10)
 
-get_weather_button = tk.Button(
+
+# Button
+tk.Button(
     window,
     text="Get Weather",
     font=("Arial", 11, "bold"),
     command=get_weather
-)
-get_weather_button.pack(pady=10)
+).pack(pady=10)
 
+
+# Output label
 result_label = tk.Label(
     window,
     text="",
     font=("Arial", 12),
-    justify="left",
-    wraplength=450
+    justify="left"
 )
 result_label.pack(pady=20)
+
 
 window.mainloop()
