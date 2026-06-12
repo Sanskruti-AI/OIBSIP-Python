@@ -1,25 +1,38 @@
 import tkinter as tk
 from tkinter import messagebox
 import requests
+import re
 
 
 def get_weather():
 
     city = city_entry.get().strip()
 
-    # Step 1: Check empty input
+    # 1. Empty check
     if city == "":
         messagebox.showerror("Error", "Please enter a city name")
         return
 
+    # 2. Strict validation (ONLY letters and spaces allowed)
+    if not re.fullmatch(r"[a-zA-Z ]+", city):
+        messagebox.showerror("Error", "City name must contain only letters")
+        return
+
+    # 3. Length check
+    if len(city.replace(" ", "")) < 3:
+        messagebox.showerror("Error", "Enter a valid city name (at least 3 letters)")
+        return
+
     try:
-        # Step 2: API call
         url = f"https://wttr.in/{city}?format=j1"
-        response = requests.get(url)
+        response = requests.get(url, timeout=5)
 
         data = response.json()
 
-        # Step 3: Get weather data
+        if "current_condition" not in data:
+            messagebox.showerror("Error", "City not found")
+            return
+
         current = data["current_condition"][0]
 
         temperature = current["temp_C"]
@@ -28,28 +41,30 @@ def get_weather():
         condition = current["weatherDesc"][0]["value"]
         wind_speed = current["windspeedKmph"]
 
-        # Step 4: Show result
         result_label.config(
             text=
-            "City: " + city + "\n\n" +
-            "Temperature: " + temperature + " °C\n" +
-            "Feels Like: " + feels_like + " °C\n" +
-            "Humidity: " + humidity + "%\n" +
-            "Condition: " + condition + "\n" +
-            "Wind Speed: " + wind_speed + " km/h"
+            f"City: {city}\n\n"
+            f"Temperature: {temperature} °C\n"
+            f"Feels Like: {feels_like} °C\n"
+            f"Humidity: {humidity}%\n"
+            f"Condition: {condition}\n"
+            f"Wind Speed: {wind_speed} km/h"
         )
 
+    except requests.exceptions.RequestException:
+        messagebox.showerror("Error", "Network error")
+
     except:
-        messagebox.showerror("Error", "Unable to fetch weather data")
+        messagebox.showerror("Error", "Something went wrong")
 
 
-# UI WINDOW
+# ---------------- UI ---------------- #
+
 window = tk.Tk()
 window.title("Weather App")
 window.geometry("500x450")
 
 
-# Title
 tk.Label(
     window,
     text="Weather App",
@@ -57,12 +72,10 @@ tk.Label(
 ).pack(pady=10)
 
 
-# City input
 city_entry = tk.Entry(window, font=("Arial", 12))
 city_entry.pack(pady=10)
 
 
-# Button
 tk.Button(
     window,
     text="Get Weather",
@@ -71,7 +84,6 @@ tk.Button(
 ).pack(pady=10)
 
 
-# Output label
 result_label = tk.Label(
     window,
     text="",
