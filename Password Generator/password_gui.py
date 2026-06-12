@@ -3,149 +3,195 @@ from tkinter import messagebox
 import random
 import string
 
+
 def generate_password():
+
     try:
         length = int(length_entry.get())
 
-        if length <= 0:
+        if length < 4:
             messagebox.showerror(
                 "Error",
-                "Password length must be greater than 0"
+                "Password length should be at least 4"
             )
             return
 
         characters = ""
 
+        password = ""
+
         if letters_var.get():
             characters += string.ascii_letters
+            password += random.choice(string.ascii_letters)
 
         if numbers_var.get():
             characters += string.digits
+            password += random.choice(string.digits)
 
         if symbols_var.get():
             characters += string.punctuation
+            password += random.choice(string.punctuation)
 
         if characters == "":
             messagebox.showerror(
                 "Error",
-                "Please select at least one character type"
+                "Select at least one option"
             )
             return
 
-        password = ""
 
-        for i in range(length):
+        for i in range(length - len(password)):
             password += random.choice(characters)
 
-        result_label.config(text=password)
 
-        if length < 8:
-            strength_label.config(text="Strength: Weak")
+        password_list = list(password)
 
-        elif length <= 12:
-            strength_label.config(text="Strength: Medium")
+        random.shuffle(password_list)
 
-        else:
-            strength_label.config(text="Strength: Strong")
+        password = "".join(password_list)
 
-    except ValueError:
-        messagebox.showerror(
-            "Error",
-            "Please enter a valid number"
+
+        result_label.config(
+            text=password
         )
 
+
+        if length < 8:
+            strength_label.config(
+                text="Strength: Weak"
+            )
+
+        elif length <= 12:
+            strength_label.config(
+                text="Strength: Medium"
+            )
+
+        else:
+            strength_label.config(
+                text="Strength: Strong"
+            )
+
+
+    except ValueError:
+
+        messagebox.showerror(
+            "Error",
+            "Enter valid password length"
+        )
+
+
+
 def copy_password():
+
     password = result_label.cget("text")
 
     if password:
+
         window.clipboard_clear()
+
         window.clipboard_append(password)
 
         messagebox.showinfo(
             "Copied",
-            "Password copied to clipboard"
+            "Password copied"
         )
+
+
 
 window = tk.Tk()
 
 window.title("Password Generator")
+
 window.geometry("500x450")
 
-title_label = tk.Label(
+
+title = tk.Label(
     window,
     text="Password Generator",
-    font=("Arial", 18, "bold")
+    font=("Arial",18,"bold")
 )
-title_label.pack(pady=10)
 
-length_label = tk.Label(
+title.pack(pady=10)
+
+
+
+tk.Label(
     window,
-    text="Enter Password Length:",
-    font=("Arial", 11)
-)
-length_label.pack()
+    text="Enter Password Length:"
+).pack()
+
 
 length_entry = tk.Entry(
-    window,
-    font=("Arial", 11),
-    width=20
+    window
 )
+
 length_entry.pack(pady=5)
 
+
+
 letters_var = tk.BooleanVar(value=True)
+
 numbers_var = tk.BooleanVar(value=True)
+
 symbols_var = tk.BooleanVar(value=True)
 
-letters_check = tk.Checkbutton(
+
+
+tk.Checkbutton(
     window,
     text="Include Letters",
     variable=letters_var
-)
-letters_check.pack()
+).pack()
 
-numbers_check = tk.Checkbutton(
+
+tk.Checkbutton(
     window,
     text="Include Numbers",
     variable=numbers_var
-)
-numbers_check.pack()
+).pack()
 
-symbols_check = tk.Checkbutton(
+
+tk.Checkbutton(
     window,
     text="Include Symbols",
     variable=symbols_var
-)
-symbols_check.pack()
+).pack()
 
-generate_button = tk.Button(
+
+
+tk.Button(
     window,
     text="Generate Password",
-    font=("Arial", 11, "bold"),
     command=generate_password
-)
-generate_button.pack(pady=15)
+).pack(pady=15)
+
+
 
 result_label = tk.Label(
     window,
     text="",
-    font=("Arial", 12, "bold"),
-    wraplength=450
+    font=("Arial",12,"bold")
 )
-result_label.pack(pady=10)
+
+result_label.pack()
+
+
 
 strength_label = tk.Label(
     window,
-    text="",
-    font=("Arial", 11, "bold")
+    text=""
 )
+
 strength_label.pack()
 
-copy_button = tk.Button(
+
+
+tk.Button(
     window,
     text="Copy Password",
-    font=("Arial", 11),
     command=copy_password
-)
-copy_button.pack(pady=10)
+).pack(pady=10)
+
+
 
 window.mainloop()
